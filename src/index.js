@@ -8,11 +8,40 @@
 
 // import mongoose from 'mongoose';
 import express from 'express';
+import connectdb from './db/index.js'
+import cors from "cors";
+import cookieParser from "cookie-parser"
+import user_router from "./routes/user.routes.js";
+import {app} from "./app.js"
 // import { db_name } from './constants.js';
+// const app=express();
 
-console.log("hello");
+// app.use(cors({
+//     origin : process.env.CORS_ORIGIN,
+//     credentials : true
+// }))
 
-const app=express();
+// app.use(express.json({limit :"16kb"}));
+// app.use(express.urlencoded({extended:true,limit:"16kb"}))
+// app.use(express.static('public'))
+// app.use(cookieParser())
+
+// app.use("/api/v1/users",user_router)
+
+// app.get('/api/v1/users',(req,res)=>{
+//     console.log("in users")
+//     res.send({
+//         "mssg":"in users"
+//     })
+// })
+
+// app.get('/test',(req,res)=>{
+//     console.log("hehehe")
+//     res.send({
+//         "mssg":"hy"
+//     })
+// })
+
 
 // (async ()=>{
 //     try
@@ -63,7 +92,7 @@ const app=express();
 
 // initialize()
 
-import connectdb from './db/index.js'
+
 
 connectdb().then(()=>
     {

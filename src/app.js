@@ -19,7 +19,14 @@ app.use(cookieParser())
 import user_router from "./routes/user.routes.js";
 
 // routes declaration
-app.use("api/v1/users",user_router)
+app.use("/api/v1/users",user_router)
+
+app.get('test',(req,res)=>{
+    console.log("hehehe")
+    res.send({
+        "mssg":"hy"
+    })
+})
 
 // http://localhost:8000/api/v1/users/register
 
