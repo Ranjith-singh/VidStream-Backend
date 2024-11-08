@@ -28,3 +28,5 @@ const upload_on_cloudinary=async (local_file_path)=>
         return null;
     }
 }
+
+export {upload_on_cloudinary}
