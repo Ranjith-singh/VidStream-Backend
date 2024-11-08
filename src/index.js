@@ -11,6 +11,7 @@ import express from 'express';
 import connectdb from './db/index.js'
 import cors from "cors";
 import cookieParser from "cookie-parser"
+
 import user_router from "./routes/user.routes.js";
 import {app} from "./app.js"
 // import { db_name } from './constants.js';
