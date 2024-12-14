@@ -4,7 +4,7 @@ import {
 } from "../controllers/user.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 
-const router = Router()
+const router = Router('./public/temp')
 
 router.route("/register").post(
     upload.fields([

@@ -1,6 +1,7 @@
 // require('dotenv').config({path : '../.env'})
 
 // import dotenv from 'dotenv'
+import 'dotenv/config'
 
 // dotenv.config({
 //     path : '../.env'
@@ -9,10 +10,10 @@
 // import mongoose from 'mongoose';
 import express from 'express';
 import connectdb from './db/index.js'
-import cors from "cors";
+// import cors from "cors";
 import cookieParser from "cookie-parser"
 
-import user_router from "./routes/user.routes.js";
+// import user_router from "./routes/user.routes.js";
 import {app} from "./app.js"
 // import { db_name } from './constants.js';
 // const app=express();
