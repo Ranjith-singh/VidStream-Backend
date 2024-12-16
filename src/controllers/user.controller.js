@@ -173,7 +173,7 @@ const loginUser = asyncHandler( async(req,res) =>{
 
 const logoutUser = asyncHandler( async(req,res)=>{
     // remove refresh token from User
-    await User.findByIdandUpdate(
+    await User.findByIdAndUpdate(
         req.user._id,
         {
             $set : {
@@ -190,10 +190,10 @@ const logoutUser = asyncHandler( async(req,res)=>{
         secure : true
     }
 
-    return res
+    return await res
     .status(200)
-    .clearCookies("accessToken",options)
-    .clearCookies("refreshToken", options)
+    .clearCookie("accessToken",options)
+    .clearCookie("refreshToken", options)
     .json(new ApiResponse(
         200,
         {},
