@@ -3,6 +3,12 @@ import {ApiError} from "../utils/ApiError.js"
 import { User } from "../models/user.models.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+import jwt from "jsonwebtoken";
+
+const options = {
+    httpOnly : true,
+    secure : true
+}
 
 const generateAccessAndRefreshToken = async (userId) =>{
     try{
@@ -143,11 +149,6 @@ const loginUser = asyncHandler( async(req,res) =>{
     const loggedInUser = await User.findById(user._id)
     .select("-password -refreshToken")
 
-    const options = {
-        httpOnly : true,
-        secure : true
-    }
-
     // console.log("refresh token :",refreshToken)
 
     // console.log("Response Data:", {
@@ -185,11 +186,6 @@ const logoutUser = asyncHandler( async(req,res)=>{
         }
     )
 
-    const options = {
-        httpOnly : true,
-        secure : true
-    }
-
     return await res
     .status(200)
     .clearCookie("accessToken",options)
@@ -201,9 +197,104 @@ const logoutUser = asyncHandler( async(req,res)=>{
     ))
 })
 
+const getAccessTokenThroughRefreshToken = asyncHandler(async(req,res)=>{
+
+    const userRefreshToken = (req.cookies.refreshToken || req.body.refreshToken)
+
+    if(!userRefreshToken){
+        throw new ApiError (
+            401,
+            "No refresh token found"
+        )
+    }
+
+    try {
+        const decodedRefreshToken = await jwt.verify(userRefreshToken,process.env.REFRESH_TOKEN_SECRET)
+    
+        const user = await User.findById({
+            _id : decodedRefreshToken?._id
+        })
+    
+        // No need to check for refresh token passed and db refresh token because
+        // jwt has signed the refreshToken when we pass "userRefreshToken" to jwt.verify()
+        // it checks for signature as well
+    
+        if(!user){
+            throw new ApiError(
+                401,
+                "Invalid Refresh token"
+            )
+        }
+    
+        const {accessToken,refreshToken} = await generateAccessAndRefreshToken(user._id)
+    
+        return res
+        .status(200)
+        .cookie("accessToken",accessToken,options)
+        .cookie("refreshToken",refreshToken,options)
+        .json(
+            new ApiResponse(
+                200,
+                {accessToken,refreshToken : refreshToken},
+                "accessToken refreshed"
+            )
+        )
+    } catch (error) {
+        throw new ApiError(
+            401,
+            error?.message || "Invalid refresh token"
+        )
+    }
+
+})
+
+const changePassword = asyncHandler(async(req,res)=>{
+    const {oldPassword, newPassword, confirmPassword} = req.body;
+
+    // console.log("oldPassword :",oldPassword);
+    // console.log("newPassword :",newPassword);
+    // console.log("confirmPassword :",confirmPassword);
+
+    if(newPassword != confirmPassword){
+        throw new ApiError(
+            401,
+            "new password and confirm password are not matching"
+        )
+    }
+
+    const user =await User.findById({
+        _id : req.user._id
+    })
+
+    // console.log("user :",user)
+
+    const passwordValidation = await user.isPasswordCorrect(oldPassword)
+
+    if(!passwordValidation){
+        throw new ApiError(
+            401,
+            "provide correct password"
+        )
+    }
+
+    user.password = newPassword
+    await user.save({validateBeforeSave : false})
+    
+    return res
+    .status(201)
+    .json(
+        new ApiResponse(
+            201,
+            {},
+            "password changed succesfully"
+        )
+    )
+})
 
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    getAccessTokenThroughRefreshToken,
+    changePassword
 }
