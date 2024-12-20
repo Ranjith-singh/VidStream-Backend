@@ -220,7 +220,7 @@ const getAccessTokenThroughRefreshToken = asyncHandler(async(req,res)=>{
         // it checks for signature as well
     
         if(!user){
-            throw new ApiError(
+            throw  ApiError(
                 401,
                 "Invalid Refresh token"
             )
@@ -291,10 +291,117 @@ const changePassword = asyncHandler(async(req,res)=>{
     )
 })
 
+const getCurrentUser = asyncHandler(async(req,res)=>{
+    const user = await req.user;
+
+    if(!user){
+        throw new ApiError(
+            401,
+            "User not logged in"
+        )
+    }
+
+    // console.log("user :",user)
+
+    return res
+    .status(200)
+    .json(new ApiResponse(
+        200,
+        {
+            user
+        },
+        "current User fetched Succesfully"
+    ))
+})
+
+const updateAccountDetails = asyncHandler(async(req,res)=>{
+    const {fullName, email} = await req.body;
+
+    if(!fullName || !email){
+        throw new ApiError(
+            401,
+            "both email and fullName are required"
+        )
+    }
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set : {
+                fullName,
+                email
+            }
+        },
+        {
+            new : true,
+        }
+    ).select("-password -refreshToken")
+    return res
+    .status(201)
+    .json(
+        new ApiResponse(
+            201,
+            user,
+            "User Updated Succesfully"
+        )
+    )
+})
+
+const updateImage = asyncHandler(async(req,res)=>{
+    const imageName = await req.body
+    // console.log("Image : ",req.file)
+    const localImagePath = await req.files?.Image[0]?.path
+
+    if(!imageName){
+        throw new ApiError(
+            400,
+            "provide image name"
+        )
+    }
+
+    if(!localImagePath){
+        throw new ApiError(
+            400,
+            "provide image file"
+        )
+    }
+
+    const uploadedImage = await uploadOnCloudinary(localImagePath)
+
+    const dynamicFieldName = Object.values(imageName)[0];
+    // console.log("imageName : ",dynamicFieldName)
+
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set : {
+                [dynamicFieldName] : uploadedImage?.url
+            }
+        },
+        {
+            new : true
+        }
+    ).select("-password -refreshToken")
+
+    // console.log("user : ",user)
+
+    return res
+    .status(201)
+    .json(
+        new ApiResponse(
+            201,
+            user,
+            "file replaced successfully"
+        )
+    )
+})
+
 export {
     registerUser,
     loginUser,
     logoutUser,
     getAccessTokenThroughRefreshToken,
-    changePassword
+    changePassword,
+    getCurrentUser,
+    updateAccountDetails,
+    updateImage
 }
