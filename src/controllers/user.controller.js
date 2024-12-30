@@ -414,6 +414,8 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
         )
     }
 
+    // console.log("username : ",username)
+
     const channel = await User.aggregate([
         {
             $match : {
@@ -466,6 +468,8 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
             }
         }
     ])
+
+    // console.log("channel : ",channel)
 
     if(!channel?.length){
         throw new ApiError(
