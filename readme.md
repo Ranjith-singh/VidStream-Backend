@@ -12,6 +12,7 @@ Secure Token Management: Implementation of access and refresh tokens to maintain
 Scalable Architecture: Designed with scalability in mind, utilizing MongoDB and Mongoose for efficient data modeling and storage.
 
 Models Overview:
+
 The application employs a set of well-defined Mongoose models to represent and manage the core entities within the platform:
 User Model: Manages user information, authentication credentials, and subscription data.
 Video Model: Handles metadata and content details for uploaded videos, including title, description, URL, and associated user references.
@@ -20,6 +21,7 @@ Subscription Model: Tracks user subscriptions to content creators, facilitating 
 Like/Dislike Model: Records user interactions with videos and comments, enabling feedback mechanisms.
 
 Learning Outcomes:
+
 This project serves as an extensive learning resource for developers interested in building production-ready backend systems. By exploring this repository, you will gain insights into:
 Implementing secure user authentication and authorization mechanisms.
 Structuring and managing complex data relationships using MongoDB and Mongoose.
