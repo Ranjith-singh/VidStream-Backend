@@ -13,6 +13,8 @@ Scalable Architecture: Designed with scalability in mind, utilizing MongoDB and 
 
 Models Overview:
 
+model schema link : https://app.eraser.io/workspace/EtdOxG7HO0yCxzSvdJcK?origin=share&elements=EYdDEXH40-00SKkjXMKcMA
+
 The application employs a set of well-defined Mongoose models to represent and manage the core entities within the platform:
 User Model: Manages user information, authentication credentials, and subscription data.
 Video Model: Handles metadata and content details for uploaded videos, including title, description, URL, and associated user references.
