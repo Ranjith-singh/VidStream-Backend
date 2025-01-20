@@ -17,9 +17,11 @@ app.use(cookieParser())
 // routes
 
 import user_router from "./routes/user.routes.js";
+import video_router from "./routes/video.routes.js"
 
 // routes declaration
 app.use("/api/v1/users",user_router)
+app.use("/api/v1/video",video_router)
 
 app.get('/test',(req,res)=>{
     console.log("hehehe")
