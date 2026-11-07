@@ -14,14 +14,15 @@ import {
 import {upload} from "../middlewares/multer.middleware.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 
-const router = Router('./public/temp')
+const router = Router()
+// const router = Router('./public/temp')
 
 router.route("/register").post(
     upload.fields([
         {
             name: "avatar",
             maxCount: 1
-        }, 
+        },
         {
             name: "coverImage",
             maxCount: 1
@@ -38,7 +39,7 @@ router.route("/refreshAccessToken").post(getAccessTokenThroughRefreshToken)
 
 router.route("/change-password").post(verifyJWT,changePassword)
 
-router.route("/getUserDetails").post(verifyJWT,getCurrentUser)
+router.route("/getUserDetails").get(verifyJWT,getCurrentUser)
 
 router.route("/updateDetails").patch(verifyJWT,updateAccountDetails)
 

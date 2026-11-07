@@ -89,15 +89,15 @@ const registerVideo = asyncHandler(async(req,res)=>{
 
 })
 
-const getAllVideos = asyncHandler(async(req,res) =>{
-    const {page = 1, limit = 10, query, sortBy, sortType, userId} = req.query
+// const getAllVideos = asyncHandler(async(req,res) =>{
+//     const {page = 1, limit = 10, query, sortBy, sortType, userId} = req.query
 
-    const pattern = Object.values(query)[0]
+//     const pattern = Object.values(query)[0]
 
-    const videos = await Video.find{
-        $like : '%query%'
-    }
-})
+//     const videos = await Video.find{
+//         $like : '%query%'
+//     }
+// })
 
 export {
     registerVideo

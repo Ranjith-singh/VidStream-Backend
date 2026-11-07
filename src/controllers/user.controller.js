@@ -82,13 +82,12 @@ const registerUser = asyncHandler( async (req, res) => {
     if (!avatar) {
         throw new ApiError(400, "upload error")
     }
-   
 
     const user = await User.create({
         fullName,
         avatar: avatar.url,
         coverImage: coverImage?.url || "",
-        email, 
+        email,
         password,
         username: username.toLowerCase()
     })
@@ -118,7 +117,7 @@ const loginUser = asyncHandler( async(req,res) =>{
     if(!username && !email){
         throw new ApiError(
             400,
-            "provide an username or email" 
+            "provide an username or email"
         )
     }
 
@@ -316,14 +315,17 @@ const getCurrentUser = asyncHandler(async(req,res)=>{
 })
 
 const updateAccountDetails = asyncHandler(async(req,res)=>{
-    const {fullName, email} = await req.body;
+    let {fullName, email} = await req.body;
 
-    if(!fullName || !email){
+    if(!fullName && !email){
         throw new ApiError(
             401,
-            "both email and fullName are required"
+            "either email or fullName are required"
         )
     }
+    fullName= fullName? fullName: req.user?.fullName;
+    email= email? email: req.user?.email;
+
     const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
