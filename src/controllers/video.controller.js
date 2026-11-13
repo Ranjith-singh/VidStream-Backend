@@ -6,37 +6,27 @@ import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 
 const registerVideo = asyncHandler(async(req,res)=>{
-    const videoFileLocalPath = req.files?.videoFile[0]?.path
-    
-    if(!videoFileLocalPath){
-        throw new ApiError(
-            400,
-            "video file is required"
-        )
-    }
 
-    const thumbnailLocalPath = req.files?.thumbnail[0]?.path
-
-    if(!thumbnailLocalPath){
-        throw new ApiError(
-            400,
-            "thumbNail file is required"
-        )
+    const keys= Object.keys(req.files);
+    // console.log(keys);
+    let videoFile, thumbnail;
+    for(const key of keys) {
+        const localPath= req.files?.[key][0]?.path;
+        if(!localPath) {
+            throw new ApiError(
+                400,
+                `${key} file is required`
+            );
+        }
+        if(key== 'videoFile') {
+            videoFile= await uploadOnCloudinary(localPath);
+        }
+        else if(key== 'thumbnail') {
+            thumbnail= await uploadOnCloudinary(localPath);
+        }
     }
 
     const {title, description} = req.body
-
-    // const user = await User.find({
-    //     username : owner
-    // })
-    
-    // if(!(owner || user)){
-    //     throw new ApiError(
-    //         400,
-    //         "owner info is required or owner not found"
-    //     )
-    // }
-
     if(
         [title, description].some((field) => field?.trim === "")
     )
@@ -46,9 +36,6 @@ const registerVideo = asyncHandler(async(req,res)=>{
             "title and description are required"
         )
     }
-
-    const videoFile = await uploadOnCloudinary(videoFileLocalPath)
-    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
     if(!(videoFile || thumbnail)){
         throw new ApiError(
@@ -65,7 +52,7 @@ const registerVideo = asyncHandler(async(req,res)=>{
         owner : req.user,
         title,
         description,
-        duration : videoFile.duration,
+        duration : videoFile?.duration,
         views : 0,
         isPublished : false
     })
